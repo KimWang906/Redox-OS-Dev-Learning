@@ -1,0 +1,89 @@
+[source]
+git = "https://gitlab.redox-os.org/redox-os/uutils.git"
+branch = "redox"
+
+[build]
+template = "custom"
+script = """
+COOKBOOK_CARGO_FLAGS+=(
+    --no-default-features
+    --features feat_os_unix_redox
+    --bin coreutils
+)
+cookbook_cargo
+
+BINS=(
+    base32
+    base64
+    basename
+    basenc
+    cat
+    chmod
+    cksum
+    comm
+    cp
+    csplit
+    cut
+    date
+    dd
+    #df not working, use redox coreutils
+    dircolors
+    dirname
+    du
+    echo
+    env
+    expand
+    expr
+    factor
+    false
+    fmt
+    fold
+    hashsum
+    head
+    install
+    join
+    link
+    ln
+    ls
+    mkdir
+    mktemp
+    mv
+    nl
+    numfmt
+    od
+    paste
+    pr
+    printenv
+    printf
+    ptx
+    pwd
+    readlink
+    realpath
+    relpath
+    rm
+    rmdir
+    seq
+    shred
+    shuf
+    sleep
+    sort
+    split
+    sum
+    tac
+    tail
+    tee
+    test
+    tr
+    true
+    truncate
+    tsort
+    unexpand
+    uniq
+    wc
+)
+
+for bin in "${BINS[@]}"
+do
+  ln -sv coreutils "${COOKBOOK_STAGE}/bin/$bin"
+done
+"""

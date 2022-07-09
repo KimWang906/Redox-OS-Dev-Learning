@@ -1,0 +1,287 @@
+# Jeremy's configuration
+
+# General settings
+[general]
+# Do not prompt if settings are not defined
+prompt = false
+
+# Package settings
+[packages]
+acid = {}
+atk = {}
+audiod = {}
+autoconf = {}
+automake = {}
+ca-certificates = {}
+cairo = {}
+cairodemo = {}
+cleye = {}
+cmatrix = {}
+contain = {}
+coreutils = {}
+cpal = {}
+curl = {}
+dash = {}
+diffutils = {}
+dosbox = {}
+drivers = {}
+eduke32 = {}
+expat = {}
+extrautils = {}
+ffmpeg = {}
+findutils = {}
+fontconfig = {}
+freedoom = {}
+freetype = {}
+fribidi = {}
+games = {}
+gcc = {}
+gdbserver = {}
+gears = {}
+generaluser-gs = {}
+gettext = {}
+gigalomania = {}
+git = {}
+glib = {}
+glium = {}
+glutin = {}
+gnu-binutils = {}
+gnu-grep = {}
+gnu-make = {}
+harfbuzz = {}
+installer = {}
+ion = {}
+ipcd = {}
+jansson = {}
+jeremy = {}
+keyboard-sfx = {}
+lci = {}
+libc-bench = {}
+libffi = {}
+libiconv = {}
+libjpeg = {}
+libogg = {}
+liborbital = {}
+libpng = {}
+libsodium = {}
+libvorbis = {}
+libxml2 = {}
+llvm = {}
+mesa = {}
+mesa_glu = {}
+nasm = {}
+ncurses = {}
+netdb = {}
+netstack = {}
+netsurf = {}
+netutils = {}
+neverball = {}
+nghttp2 = {}
+openjazz = {}
+openssl = {}
+openttd = {}
+openttd-opengfx = {}
+openttd-openmsx = {}
+openttd-opensfx = {}
+orbclient = {}
+orbdata = {}
+orbital = {}
+orbterm = {}
+orbutils = {}
+osdemo = {}
+pango = {}
+patch = {}
+pcre = {}
+periodictable = {}
+pixelcannon = {}
+pixman = {}
+pkg-config = {}
+pkgutils = {}
+prboom = {}
+ptyd = {}
+readline = {}
+redoxfs = {}
+resist = {}
+ripgrep = {}
+rodioplay = {}
+rs-nes = {}
+rust = {}
+rust64 = {}
+rust-cairo = {}
+rust-cairo-demo = {}
+rustual-boy = {}
+schismtracker = {}
+scummvm = {}
+sdl = {}
+sdl2 = {}
+sdl2_gears = {}
+sdl2_image = {}
+sdl2_mixer = {}
+sdl2_ttf = {}
+sdl_gfx = {}
+sdl_image = {}
+sdl_mixer = {}
+sed = {}
+smith = {}
+sodium = {}
+sopwith = {}
+strace = {}
+syobonaction = {}
+terminfo = {}
+timidity = {}
+ttf-hack = {}
+userutils = {}
+uutils = {}
+vice = {}
+vim = {}
+vttest = {}
+vvvvvv = {}
+winit = {}
+xz = {}
+zlib = {}
+
+# User settings
+[users.root]
+password = "password"
+uid = 0
+gid = 0
+name = "root"
+home = "/root"
+
+[users.user]
+# Password is unset
+password = ""
+
+[[files]]
+path = "/etc/init.d/00_base"
+data = """
+ipcd
+ptyd
+pcid /etc/pcid.d/
+"""
+
+[[files]]
+path = "/etc/init.d/10_net"
+data = """
+smolnetd
+dnsd
+dhcpd -b
+"""
+
+[[files]]
+path = "/etc/init.d/20_orbital"
+data = """
+audiod
+orbital display:3/activate orblogin launcher
+"""
+
+[[files]]
+path = "/etc/init.d/30_console"
+data = """
+getty display:2
+getty debug: -J
+"""
+
+[[files]]
+path = "/etc/net/dns"
+data = """
+208.67.222.222
+"""
+
+[[files]]
+path = "/etc/net/ip"
+data = """
+10.0.2.15
+"""
+
+[[files]]
+path = "/etc/net/ip_router"
+data = """
+10.0.2.2
+"""
+
+[[files]]
+path = "/etc/net/ip_subnet"
+data = """
+255.255.255.0
+"""
+
+[[files]]
+path = "/etc/net/mac"
+data = """
+54-52-00-ab-cd-ef
+"""
+
+[[files]]
+path = "/etc/pkg.d/50_redox"
+data = "https://static.redox-os.org/pkg"
+
+[[files]]
+path = "/etc/redox-release"
+data = "0.7.0"
+
+[[files]]
+path = "/etc/group"
+data = """
+root;0;root
+user;1000;user
+sudo;1;user
+"""
+
+[[files]]
+path = "/etc/hostname"
+data = """
+redox
+"""
+
+[[files]]
+path = "/usr/bin"
+data = "../bin"
+symlink = true
+
+[[files]]
+path = "/usr/games"
+data = "../games"
+symlink = true
+
+[[files]]
+path = "/usr/include"
+data = "../include"
+symlink = true
+
+[[files]]
+path = "/usr/lib"
+data = "../lib"
+symlink = true
+
+[[files]]
+path = "/usr/share"
+data = "../share"
+symlink = true
+
+[[files]]
+path = "/tmp"
+data = ""
+directory= true
+# 0o1777
+mode = 1023
+
+[[files]]
+path = "/dev/null"
+data = "null:"
+symlink = true
+
+[[files]]
+path = "/dev/random"
+data = "rand:"
+symlink = true
+
+[[files]]
+path = "/dev/urandom"
+data = "rand:"
+symlink = true
+
+[[files]]
+path = "/dev/zero"
+data = "zero:"
+symlink = true

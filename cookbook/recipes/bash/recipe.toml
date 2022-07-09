@@ -1,0 +1,22 @@
+[source]
+tar = "http://ftp.gnu.org/gnu/bash/bash-4.4.tar.gz"
+patches = [
+    "redox.patch"
+]
+script = """
+wget -O support/config.sub "https://gitlab.redox-os.org/redox-os/gnu-config/-/raw/master/config.sub?inline=false"
+"""
+
+[build]
+template = "custom"
+dependencies = [
+    "gettext"
+]
+script = """
+COOKBOOK_CONFIGURE_FLAGS+=(
+    --disable-readline
+    bash_cv_getenv_redef=no
+)
+COOKBOOK_MAKE_JOBS=1 # workaround for parallel make bugs
+cookbook_configure
+"""

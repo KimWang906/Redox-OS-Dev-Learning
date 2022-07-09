@@ -1,0 +1,15 @@
+[source]
+tar = "http://zlib.net/fossils/zlib-1.2.12.tar.gz"
+blake3 = "b7ad5638d87c69665afaae138bab40cc9a53a7ae7da9d168303e3df6b051d2b5"
+
+[build]
+template = "custom"
+script = """
+    export LDFLAGS="--static"
+    # See https://stackoverflow.com/questions/21396988/zlib-build-not-configuring-properly-with-cross-compiler-ignores-ar.
+    CHOST="${TARGET}" "${COOKBOOK_CONFIGURE}" \
+        --prefix="" \
+        --static
+    "${COOKBOOK_MAKE}" -j "$(nproc)"
+    "${COOKBOOK_MAKE}" install DESTDIR="${COOKBOOK_STAGE}"
+"""

@@ -1,0 +1,144 @@
+diff -ruwN source/builtins/ulimit.def source-new/builtins/ulimit.def
+--- source/builtins/ulimit.def	2016-03-11 07:18:54.000000000 -0700
++++ source-new/builtins/ulimit.def	2020-07-14 20:52:15.875646752 -0600
+@@ -598,7 +598,7 @@
+       }
+   else
+     {
+-#if defined (HAVE_RESOURCE)
++#if defined (HAVE_RESOURCE) && !defined(__redox__)
+       if (getrlimit (limits[ind].parameter, &limit) < 0)
+ 	return -1;
+ #  if defined (HPUX9)
+diff -ruwN source/config-top.h source-new/config-top.h
+--- source/config-top.h	2016-05-19 12:34:02.000000000 -0600
++++ source-new/config-top.h	2020-07-14 20:50:54.546545430 -0600
+@@ -63,14 +63,14 @@
+ /* The default value of the PATH variable. */
+ #ifndef DEFAULT_PATH_VALUE
+ #define DEFAULT_PATH_VALUE \
+-  "/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:."
++  "/usr/local/bin;/usr/local/sbin;/usr/bin;/usr/sbin;/bin;/sbin;."
+ #endif
+ 
+ /* The value for PATH when invoking `command -p'.  This is only used when
+    the Posix.2 confstr () function, or CS_PATH define are not present. */
+ #ifndef STANDARD_UTILS_PATH
+ #define STANDARD_UTILS_PATH \
+-  "/bin:/usr/bin:/sbin:/usr/sbin:/etc:/usr/etc"
++  "/bin;/usr/bin;/sbin;/usr/sbin;/etc;/usr/etc"
+ #endif
+ 
+ /* Default primary and secondary prompt strings. */
+diff -ruwN source/configure.ac source-new/configure.ac
+--- source/configure.ac	2016-09-07 14:56:28.000000000 -0600
++++ source-new/configure.ac	2020-07-14 20:50:54.550545485 -0600
+@@ -90,6 +90,7 @@
+ *-opennt*|*-interix*)	opt_bash_malloc=no ;;	# Interix, now owned by Microsoft
+ *-nsk*)		opt_bash_malloc=no ;;	# HP NonStop
+ *-haiku*)	opt_bash_malloc=no ;;	# Haiku OS
++*-redox*)	opt_bash_malloc=no ;;	# Redox OS
+ esac
+ 
+ # memory scrambling on free()
+diff -ruwN source/execute_cmd.c source-new/execute_cmd.c
+--- source/execute_cmd.c	2016-08-26 05:10:08.000000000 -0600
++++ source-new/execute_cmd.c	2020-07-14 20:50:54.550545485 -0600
+@@ -1335,15 +1335,17 @@
+   nullcmd = (command == 0) || (command->type == cm_simple && command->value.Simple->words == 0 && command->value.Simple->redirects == 0);
+   if (posixly_correct && nullcmd)
+     {
+-#if defined (HAVE_GETRUSAGE)
++#if defined (HAVE_GETRUSAGE) && defined (HAVE_GETTIMEOFDAY)
+       selfb.ru_utime.tv_sec = kidsb.ru_utime.tv_sec = selfb.ru_stime.tv_sec = kidsb.ru_stime.tv_sec = 0;
+       selfb.ru_utime.tv_usec = kidsb.ru_utime.tv_usec = selfb.ru_stime.tv_usec = kidsb.ru_stime.tv_usec = 0;
+       before.tv_sec = shell_start_time;
+       before.tv_usec = 0;
+ #else
++#  if defined (HAVE_TIMES)
+       before.tms_utime = before.tms_stime = before.tms_cutime = before.tms_cstime = 0;
+       tbefore = shell_start_time;
+ #endif
++#endif
+     }
+ 
+   old_flags = command->flags;
+diff -ruwN source/general.c source-new/general.c
+--- source/general.c	2016-08-11 09:16:56.000000000 -0600
++++ source-new/general.c	2020-07-14 20:50:54.550545485 -0600
+@@ -476,6 +476,7 @@
+ void
+ check_dev_tty ()
+ {
++#if !defined(__redox__)
+   int tty_fd;
+   char *tty;
+ 
+@@ -490,6 +491,7 @@
+     }
+   if (tty_fd >= 0)
+     close (tty_fd);
++#endif
+ }
+ 
+ /* Return 1 if PATH1 and PATH2 are the same file.  This is kind of
+@@ -909,10 +911,10 @@
+      `:'.  If I is 0, then the path has a leading colon.  Trailing colons
+      are handled OK by the `else' part of the if statement; an empty
+      string is returned in that case. */
+-  if (i && string[i] == ':')
++  if (i && string[i] == ';')
+     i++;
+ 
+-  for (start = i; string[i] && string[i] != ':'; i++)
++  for (start = i; string[i] && string[i] != ';'; i++)
+     ;
+ 
+   *p_index = i;
+diff -ruwN source/include/posixwait.h source-new/include/posixwait.h
+--- source/include/posixwait.h	2008-08-12 08:03:03.000000000 -0600
++++ source-new/include/posixwait.h	2020-07-14 20:50:54.554545541 -0600
+@@ -34,7 +34,7 @@
+ 
+ /* How to get the status of a job.  For Posix, this is just an
+    int, but for other systems we have to crack the union wait. */
+-#if !defined (_POSIX_VERSION)
++#if 0
+ typedef union wait WAIT;
+ #  define WSTATUS(t)  (t.w_status)
+ #else /* _POSIX_VERSION */
+@@ -50,7 +50,7 @@
+ 
+ /* More Posix P1003.1 definitions.  In the POSIX versions, the parameter is
+    passed as an `int', in the non-POSIX version, as `union wait'. */
+-#if defined (_POSIX_VERSION)
++#if 1
+ 
+ #  if !defined (WSTOPSIG)
+ #    define WSTOPSIG(s)       ((s) >> 8)
+diff -ruwN source/lib/sh/getcwd.c source-new/lib/sh/getcwd.c
+--- source/lib/sh/getcwd.c	2012-03-10 08:48:50.000000000 -0700
++++ source-new/lib/sh/getcwd.c	2020-07-14 20:50:54.554545541 -0600
+@@ -20,7 +20,7 @@
+ 
+ #include <config.h>
+ 
+-#if !defined (HAVE_GETCWD)
++#if !defined (HAVE_GETCWD) && !defined(__redox__)
+ 
+ #if !defined (__GNUC__) && !defined (HAVE_ALLOCA_H) && defined (_AIX)
+   #pragma alloca
+diff -ruwN source/sig.c source-new/sig.c
+--- source/sig.c	2016-02-11 13:02:45.000000000 -0700
++++ source-new/sig.c	2020-07-14 20:50:54.554545541 -0600
+@@ -680,7 +680,9 @@
+ }
+ 
+ /* Signal functions used by the rest of the code. */
+-#if !defined (HAVE_POSIX_SIGNALS)
++#if defined(__redox__)
++// Redox already has sigprocmask
++#elif !defined (HAVE_POSIX_SIGNALS)
+ 
+ /* Perform OPERATION on NEWSET, perhaps leaving information in OLDSET. */
+ sigprocmask (operation, newset, oldset)

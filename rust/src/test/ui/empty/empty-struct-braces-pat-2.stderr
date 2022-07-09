@@ -1,0 +1,69 @@
+error[E0532]: expected tuple struct or tuple variant, found struct `Empty1`
+  --> $DIR/empty-struct-braces-pat-2.rs:15:9
+   |
+LL | struct Empty1 {}
+   | ---------------- `Empty1` defined here
+...
+LL |         Empty1() => ()
+   |         ^^^^^^^^
+   |
+help: a tuple struct with a similar name exists
+   |
+LL |         XEmpty6() => ()
+   |         ^^^^^^^
+help: use struct pattern syntax instead
+   |
+LL |         Empty1 {} => ()
+   |         ^^^^^^^^^
+
+error[E0532]: expected tuple struct or tuple variant, found struct `XEmpty1`
+  --> $DIR/empty-struct-braces-pat-2.rs:18:9
+   |
+LL |         XEmpty1() => ()
+   |         ^^^^^^^^^
+   |
+help: a tuple struct with a similar name exists
+   |
+LL |         XEmpty6() => ()
+   |         ^^^^^^^
+help: use struct pattern syntax instead
+   |
+LL |         XEmpty1 {} => ()
+   |         ^^^^^^^^^^
+
+error[E0532]: expected tuple struct or tuple variant, found struct `Empty1`
+  --> $DIR/empty-struct-braces-pat-2.rs:21:9
+   |
+LL | struct Empty1 {}
+   | ---------------- `Empty1` defined here
+...
+LL |         Empty1(..) => ()
+   |         ^^^^^^^^^^
+   |
+help: a tuple struct with a similar name exists
+   |
+LL |         XEmpty6(..) => ()
+   |         ^^^^^^^
+help: use struct pattern syntax instead
+   |
+LL |         Empty1 {} => ()
+   |         ^^^^^^^^^
+
+error[E0532]: expected tuple struct or tuple variant, found struct `XEmpty1`
+  --> $DIR/empty-struct-braces-pat-2.rs:24:9
+   |
+LL |         XEmpty1(..) => ()
+   |         ^^^^^^^^^^^
+   |
+help: a tuple struct with a similar name exists
+   |
+LL |         XEmpty6(..) => ()
+   |         ^^^^^^^
+help: use struct pattern syntax instead
+   |
+LL |         XEmpty1 {} => ()
+   |         ^^^^^^^^^^
+
+error: aborting due to 4 previous errors
+
+For more information about this error, try `rustc --explain E0532`.
