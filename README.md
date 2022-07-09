@@ -1,3 +1,6 @@
+- Updated by KimWang09
+- 2022 / 07 / 09 / Git Clone
+
 <p align="center">
 <img alt="Redox" width="346" src="https://gitlab.redox-os.org/redox-os/assets/raw/master/logos/redox/logo.png">
 </p>
@@ -171,5 +174,3 @@ make pull; make fetch
 
 `make pull` pulls and updates the submodules, and `make fetch` updates the sources for cookbook recipes.
 
-- Updated by KimWang09
-- 2022 / 07 / 09 / Git Clone 
